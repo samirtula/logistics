@@ -49,6 +49,9 @@ class LogisticService
                 'price' => round($price, 2),
             ];
         }
+        usort($prices, function ($a, $b) {
+            return $a['price'] <=> $b['price'];
+        });
 
         return $prices;
     }

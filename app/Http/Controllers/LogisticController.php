@@ -26,10 +26,6 @@ class LogisticController extends Controller
             $totalDistance = $this->logisticService->calculateTotalDistance($addresses);
             $prices = $this->logisticService->calculatePrices($totalDistance, $vehicleTypes);
 
-            usort($prices, function ($a, $b) {
-                return $a['price'] <=> $b['price'];
-            });
-
             return response()
                 ->json([
                     'total_distance' => round($totalDistance, 2),
