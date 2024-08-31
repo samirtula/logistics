@@ -1,0 +1,71 @@
+# Lumen
+Homestead.json
+Homestead.yaml
+# Composer dependencies
+/vendor
+/composer.lock
+
+# Environment variables
+.env
+.env.backup
+.env.*.php
+
+# Laravel 5 & Lumen specific
+/storage/*.key
+/public/storage
+/storage/logs
+/storage/framework/cache/data
+/storage/framework/sessions
+/storage/framework/views
+
+# Nginx/Apache/HTTP server logs
+/logs
+*.log
+
+# Ignore specific extension types
+*.cache
+*.backup
+*.bak
+*.swp
+*.tmp
+
+# Node.js dependencies
+/node_modules/
+/npm-debug.log
+/yarn-error.log
+/yarn-debug.log
+/.pnp
+.pnp.js
+
+# OS-generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+
+# IDE-specific files
+.editorconfig
+.idea/
+*.iml
+*.sublime-workspace
+*.sublime-project
+*.vscode/
+
+# Docker-specific files
+docker-compose.override.yml
+.docker/
+docker-sync.yml
+
+# PHPUnit result cache
+.phpunit.result.cache
+
+# Ignore build artifacts
+/build/
+/dist/
+/coverage/
+/reports/
+/storage/

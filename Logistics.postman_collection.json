@@ -1,0 +1,54 @@
+{
+	"info": {
+		"_postman_id": "af2cfd3d-fbd7-46fa-9725-cd8cc6a8e3c1",
+		"name": "Logistics",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29130349",
+		"_collection_link": "https://planetary-escape-208798.postman.co/workspace/development~043e5a78-e052-4e89-8069-46bf7ec30a88/collection/29130349-af2cfd3d-fbd7-46fa-9725-cd8cc6a8e3c1?action=share&source=collection_link&creator=29130349"
+	},
+	"item": [
+		{
+			"name": "Сalculate",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "logistics_2024",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "logistics_2024",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"addresses\": [\n        {\n            \"country\": \"DE\",\n            \"zip\": \"10115\",\n            \"city\": \"Berlin\"\n        },\n        {\n            \"country\": \"DE\",\n            \"zip\": \"20095\",\n            \"city\": \"Hamburg\"\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost/logistics/calculate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"logistics",
+						"calculate"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
