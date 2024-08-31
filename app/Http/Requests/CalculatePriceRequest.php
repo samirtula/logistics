@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\DTO\AddressDTO;
 use App\Services\LogisticService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -37,8 +38,10 @@ class CalculatePriceRequest extends Request
 
         $validator->after(function ($validator) use ($data) {
             foreach ($data['addresses'] as $address) {
-                if (!$this->logisticService->getCity($address['country'], $address['zip'], $address['city'])) {
-                    $validator->errors()->add('addresses', 'The city ' . $address['city'] . ' does not exist in the database.');
+                $addressDTO = new AddressDTO($address['country'], $address['zip'], $address['city']);
+
+                if (!$this->logisticService->getCity($addressDTO)) {
+                    $validator->errors()->add('addresses', 'The city ' . $addressDTO->getCity() . ' does not exist in the database.');
                 }
             }
         });

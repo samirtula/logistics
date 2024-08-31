@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\DTO\AddressDTO;
 use App\Repositories\interfaces\LogisticRepositoryInterface;
 use App\Tools\LogisticTool;
 use Predis\Client as RedisClient;
@@ -48,16 +49,16 @@ class LogisticRepository implements LogisticRepositoryInterface
         }
     }
 
-    public function getCity(string $country, string $zip, string $city): array
+    public function getCity(AddressDTO $addressDTO): array
     {
         try {
             $database = $this->mongoClient->selectDatabase(config('database.mongo.db'));
              return $database
                 ->selectCollection(self::CITIES_TYPES_COLLECTION, LogisticTool::getArrayTypeMap())
                 ->findOne([
-                    'country' => $country,
-                    'zipCode' => $zip,
-                    'name' => $city,
+                    'country' => $addressDTO->getCountry(),
+                    'zipCode' => $addressDTO->getZip(),
+                    'name' => $addressDTO->getCity(),
                 ]);
         } catch (Throwable $e) {
             Log::channel('logistic_storage')->error('Error fetching city: ') . $e->getMessage();

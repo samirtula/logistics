@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\DTO\AddressDTO;
+use App\DTO\DistanceResponseDTO;
+use App\DTO\VehicleTypeDTO;
 use App\Http\Client\LogisticHTTPClient;
 use App\Repositories\LogisticRepository;
-use App\Tools\LogisticTool;
+use RuntimeException;
 
 class LogisticService
 {
@@ -18,14 +21,16 @@ class LogisticService
 
     public function calculateTotalDistance(array $addresses): float
     {
-        $origin = $addresses[0];
-        $destinations = array_slice($addresses, 1);
-        $totalDistance = 0.0;
+        $addressesDTO = array_map(
+            fn($address) => new AddressDTO($address['country'], $address['zip'], $address['city']),
+            $addresses
+        );
+        $origin = array_shift($addressesDTO);
+        $totalDistance = 0;
 
-        foreach ($destinations as $destination) {
-            $data = $this->fetchDistance($origin, $destination);
-            $distance = $data['routes'][0]['legs'][0]['distance']['value'] / 1000.0;
-            $totalDistance += $distance;
+        foreach ($addressesDTO as $destination) {
+            $distanceDto = $this->fetchDistance($origin, $destination);
+            $totalDistance += $distanceDto->getDistanceKm();
             $origin = $destination;
         }
 
@@ -35,13 +40,12 @@ class LogisticService
     public function calculatePrices(float $totalDistance, array $vehicleTypes): array
     {
         $prices = [];
+
+        /** @var VehicleTypeDTO $vehicleType */
         foreach ($vehicleTypes as $vehicleType) {
-            $price = max(
-                $totalDistance * LogisticTool::getCostPerKm($vehicleType),
-                LogisticTool::getMinimumPrice($vehicleType)
-            );
+            $price = max($totalDistance * $vehicleType->getCostPerKm(), $vehicleType->getMinimumPrice());
             $prices[] = [
-                'vehicle_type' => LogisticTool::getVehicleTypeNumber($vehicleType),
+                'vehicle_type' => $vehicleType->getVehicleTypeNumber(),
                 'price' => round($price, 2),
             ];
         }
@@ -49,29 +53,44 @@ class LogisticService
         return $prices;
     }
 
-    private function fetchDistance(array $origin, array $destination): array
+    private function fetchDistance(AddressDTO $origin, AddressDTO $destination): DistanceResponseDTO
     {
-        $originFormatted = LogisticTool::formatAddress($origin);
-        $destinationFormatted = LogisticTool::formatAddress($destination);
-
         $url = sprintf(
             '%s?origin=%s&destination=%s&key=%s',
             config('app.google.maps_uri'),
-            urlencode($originFormatted),
-            urlencode($destinationFormatted),
+            urlencode($origin->getFormated()),
+            urlencode($destination->getFormated()),
             config('app.google.api_key')
         );
 
-        return $this->httpClient->get($url);
+        $response = $this->httpClient->get($url);
+        $distance = $response['routes'][0]['legs'][0]['distance']['value'] ?? null;
+
+        if (!$distance) {
+            throw new RuntimeException('No distance information in the response');
+        }
+
+        $distance /= 1000;
+
+        return new DistanceResponseDTO($distance);
     }
 
     public function getVehicleTypes(): array
     {
-        return $this->repository->getVehicleTypes();
+        $vehicleTypes = $this->repository->getVehicleTypes();
+
+        return array_map(
+            fn($vehicleType) => new VehicleTypeDTO(
+                $vehicleType['cost_km'],
+                $vehicleType['minimum'],
+                $vehicleType['number']
+            ),
+            $vehicleTypes
+        );
     }
 
-    public function getCity(string $country, string $zip, string $city): array
+    public function getCity(AddressDTO $addressDTO): array
     {
-        return $this->repository->getCity($country, $zip, $city);
+        return $this->repository->getCity($addressDTO);
     }
 }

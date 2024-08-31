@@ -6,6 +6,7 @@
 - [Features](#features)
 - [Setup and Installation](#setup-and-installation)
 - [Testing](#testing)
+- [Static Analysis](#analysis)
 
 ## Introduction
 The Logistic Price Calculation API is a RESTful service that calculates transport prices based on route details provided in the request. The API uses the Google Directions API to determine the total distance between multiple addresses and calculates the price for different vehicle types based on this distance.
@@ -18,6 +19,7 @@ The Logistic Price Calculation API is a RESTful service that calculates transpor
 - **Google Directions API**
 - **PHPUnit** for testing
 - **Redis** for caching
+- **PHPStan** for static analysis
 
 ## Features
 - **Transport Price Calculation:** Calculate prices for different vehicle types based on the total distance between multiple addresses.
@@ -31,4 +33,8 @@ The Logistic Price Calculation API is a RESTful service that calculates transpor
 
 ## Testing
 - docker exec -it logistics_app ./vendor/bin/phpunit
-- You can find Postman collection in root directory
+
+## Static Analysis
+- docker exec -it logistics_app ./vendor/bin/phpstan analyze app
+
+You can find Postman collection in root directory

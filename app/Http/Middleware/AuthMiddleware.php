@@ -12,7 +12,7 @@ class AuthMiddleware
     {
         $userKey = $request->header('Authorization');
 
-            if ($userKey !== 'Basic ' . base64_encode(config('app.api_key'))) {
+        if ($userKey !== 'Basic ' . base64_encode(config('app.api_key'))) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
