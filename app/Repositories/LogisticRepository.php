@@ -53,6 +53,7 @@ class LogisticRepository implements LogisticRepositoryInterface
     {
         try {
             $database = $this->mongoClient->selectDatabase(config('database.mongo.db'));
+
              return $database
                 ->selectCollection(self::CITIES_TYPES_COLLECTION, LogisticTool::getArrayTypeMap())
                 ->findOne([

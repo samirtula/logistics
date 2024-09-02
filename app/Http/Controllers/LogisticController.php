@@ -6,8 +6,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CalculatePriceRequest;
 use App\Services\LogisticService;
-use Exception;
 use Illuminate\Http\JsonResponse;
+use Throwable;
 
 class LogisticController extends Controller
 {
@@ -31,10 +31,11 @@ class LogisticController extends Controller
                     'total_distance' => round($totalDistance, 2),
                     'prices' => $prices,
                 ]);
-        } catch (Exception $e) {
-            return response()->json([
-                'error' => 'Error',
-                'message' => $e->getMessage(),
+        } catch (Throwable $e) {
+            return response()
+                ->json([
+                    'error' => 'Error',
+                    'message' => $e->getMessage(),
             ], 500);
         }
     }

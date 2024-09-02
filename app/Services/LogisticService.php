@@ -22,7 +22,11 @@ class LogisticService
     public function calculateTotalDistance(array $addresses): float
     {
         $addressesDTO = array_map(
-            fn($address) => new AddressDTO($address['country'], $address['zip'], $address['city']),
+            fn($address) => new AddressDTO(
+                $address['country'],
+                $address['zip'],
+                $address['city']
+            ),
             $addresses
         );
         $origin = array_shift($addressesDTO);
